@@ -1,5 +1,6 @@
 import mysql.connector
 import json
+from flask import make_response 
 class user_model():
     def __init__(self):
         try:
@@ -13,25 +14,27 @@ class user_model():
         self.cur.execute("SELECT * FROM users")
         result=self.cur.fetchall()
         if len(result)>0:
-            return json.dumps(result)
+            return make_response( {"Payload":result},200)
+            # return json.dumps(result)
         else:
-            return "There is no data"
+            return make_response( {"Message":"No data is in there....."},204)
         
     def user_add_model(self,data):
         self.cur.execute(f"INSERT INTO users(name,email,phone,role ,password) VALUES ('{data['name']}','{data['email']}','{data['phone']}','{data['role']}','{data['password']}')")
-        return "user created successfully in the database...."
+        return make_response( {"Message":"User created successfully in the database...."},201)
     
-
     def user_update_model(self,data):
         self.cur.execute(f"UPDATE users SET name='{data['name']}', email='{data['email']}', role='{data['role']}',phone='{data['phone']}',password='{data['password']}' WHERE id={data['id']}")
         if self.cur.rowcount>0:
-            return "The data is updated successfully........"
+            return make_response ({"Message":"User Updated successfully in the database...."},201)
         else:
-            return "The id is not there so the data is not updated......."
+            return make_response ({"Message":"The id is not there so the data is not updated......."},204)
 
+    
     def user_delete_model(self,id):
         self.cur.execute(f"DELETE FROM users WHERE id ={id}")
         if self.cur.rowcount>0:
-            return "The data is deleted successfully........"
+            return make_response( {"Message":"The data is deleted successfully........"},200)
         else:
-            return "The id is not there so the data is not delete......."  
+            return make_response({"Message":"The id is not there so the data is not delete......."},202)
+             
