@@ -10,6 +10,7 @@ class user_model():
             print("connection is successful.")
         except:
             print("some error in sql connection.......")
+            
     def user_getall_model(self):
         self.cur.execute("SELECT * FROM users")
         result=self.cur.fetchall()
@@ -49,3 +50,10 @@ class user_model():
             return make_response ({"Message":"User data is Updated successfully "},201)
         else:
             return make_response ({"Message":"The data is not updated......."},204)  
+        
+    def user_upload_model(self,uid,path):
+        self.cur.execute(f"UPDATE users SET avtar='{path}' WHERE id ={uid}")
+        if self.cur.rowcount>0:
+            return make_response ({"Message":"Image uploaded successfully...."},201)
+        else:
+            return make_response ({"Message":"Image is not able to update...."},204)  

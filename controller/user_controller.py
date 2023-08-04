@@ -2,7 +2,8 @@ from app import app
 from flask import request,jsonify
 from model.user_model import user_model
 import json
-from flask import request
+from datetime import datetime
+from flask import request ,send_file
 obj=user_model()
 
 @app.route("/user",methods=["GET"])
@@ -33,3 +34,19 @@ def user_delete_controller(id):
 def user_patch_controller(id):
     return obj.user_patch_model(request.form,id)
 
+@app.route("/user/<uid>/upload/avtar",methods=["PUT"])
+def user_upload_controller(uid):
+    file=request.files['avtar']
+    
+    unique_filename =str(datetime.now().timestamp()).replace(".","")
+    print(unique_filename)
+    filename_split=file.filename.split(".")
+    exten= filename_split[len(filename_split)-1]
+    final_path=f"Images/{unique_filename}.{exten}"
+    file.save(final_path)
+
+    return obj.user_upload_model(uid,final_path)
+
+@app.route("/Images/<filename>")
+def user_getavtar_controller(filename):
+    return send_file(f"Images/{filename}")
